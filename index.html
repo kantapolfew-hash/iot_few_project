@@ -1,30 +1,103 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="th">
 <head>
   <meta charset="UTF-8">
   <title>ควบคุม LED ผ่าน Firebase</title>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", sans-serif;
+      background: #0d0d0d;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+    }
+
+    h2 {
+      font-size: 2rem;
+      color: #ff1a1a;
+      text-shadow: 0 0 10px #ff0000;
+      margin-bottom: 20px;
+    }
+
+    button {
+      background: #1a1a1a;
+      border: 2px solid #ff1a1a;
+      color: #ff1a1a;
+      padding: 12px 25px;
+      margin: 10px;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.3s;
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background: #ff1a1a;
+      color: #fff;
+      box-shadow: 0 0 15px #ff1a1a, 0 0 30px #ff1a1a;
+    }
+
+    p {
+      margin-top: 20px;
+      font-size: 1.2rem;
+    }
+
+    #ledStatus {
+      font-weight: bold;
+      color: #ff1a1a;
+      text-shadow: 0 0 10px #ff1a1a;
+    }
+
+    /* เอฟเฟกต์ไฟกระพริบเวลา ON */
+    .on {
+      color: #00ff55 !important;
+      text-shadow: 0 0 10px #00ff55, 0 0 20px #00ff55;
+    }
+
+    .off {
+      color: #ff1a1a !important;
+      text-shadow: 0 0 10px #ff1a1a, 0 0 20px #ff1a1a;
+    }
+
+    footer {
+      position: absolute;
+      bottom: 10px;
+      font-size: 0.8rem;
+      color: #555;
+    }
+  </style>
 </head>
 <body>
-  <h2>🔥 ควบคุมหลอดไฟ LED</h2>
-  <button onclick="turnOn()">เปิด LED</button>
-  <button onclick="turnOff()">ปิด LED</button>
-  <p>สถานะ: <span id="ledStatus">--</span></p>
+  <h2>🔥 ควบคุมหลอดไฟ LED 🔥</h2>
+  <div>
+    <button onclick="turnOn()">เปิด LED</button>
+    <button onclick="turnOff()">ปิด LED</button>
+  </div>
+  <p>สถานะ: <span id="ledStatus" class="off">--</span></p>
+
+  <footer>⚡ ระบบ IoT คุมผ่าน Firebase ⚡</footer>
 
   <script>
     // ตั้งค่า Firebase
-const firebaseConfig = {
-  apiKey: "AIzaSyCzOVyNT1gcTLQ8U4ylB-KANinR7Sz3hMI",
-  authDomain: "project-de349.firebaseapp.com",
-  databaseURL: "https://project-de349-default-rtdb.firebaseio.com",
-  projectId: "project-de349",
-  storageBucket: "project-de349.firebasestorage.app",
-  messagingSenderId: "756893178805",
-  appId: "1:756893178805:web:77d05b565d1ae286ef17fc",
-  measurementId: "G-DD9P8PQCZ9"
-};
+    const firebaseConfig = {
+      apiKey: "AIzaSyCzOVyNT1gcTLQ8U4ylB-KANinR7Sz3hMI",
+      authDomain: "project-de349.firebaseapp.com",
+      databaseURL: "https://project-de349-default-rtdb.firebaseio.com",
+      projectId: "project-de349",
+      storageBucket: "project-de349.firebasestorage.app",
+      messagingSenderId: "756893178805",
+      appId: "1:756893178805:web:77d05b565d1ae286ef17fc",
+      measurementId: "G-DD9P8PQCZ9"
+    };
 
     // เริ่มต้น Firebase
     firebase.initializeApp(firebaseConfig);
@@ -40,13 +113,16 @@ const firebaseConfig = {
 
     // อัปเดตสถานะแบบ real-time
     db.ref("led").on("value", (snapshot) => {
-      document.getElementById("ledStatus").innerText = snapshot.val();
+      const status = snapshot.val();
+      const ledStatus = document.getElementById("ledStatus");
+      ledStatus.innerText = status.toUpperCase();
+
+      if (status === "on") {
+        ledStatus.className = "on";
+      } else {
+        ledStatus.className = "off";
+      }
     });
   </script>
 </body>
 </html>
-
-
-
-
-
